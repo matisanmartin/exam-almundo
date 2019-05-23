@@ -1,5 +1,6 @@
 package com.almundo.exam.service.chain;
 
+import com.almundo.exam.model.Call;
 import com.almundo.exam.model.GenericQueue;
 import com.almundo.exam.model.Supervisor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 @Component
-public class SupervisorChainService implements GenericChainService<Supervisor> {
+public class SupervisorChainService extends GenericChainService<Supervisor, Call> {
 
     @Autowired
     private DirectorChainService directorChainService;
@@ -21,14 +22,12 @@ public class SupervisorChainService implements GenericChainService<Supervisor> {
     }
 
     @Override
-    public void process(Supervisor element) {
-
-        if(availableSupervisors.isEmpty())
-            getNext().process(element);
+    protected GenericQueue<Supervisor> getQueue() {
+        return availableSupervisors;
     }
 
     @Override
-    public GenericChainService<Supervisor> getNext() {
+    public GenericChainService getNext() {
         return directorChainService;
     }
 }
